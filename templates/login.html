@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h2 class="text-center mb-4">Logowanie</h2>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nazwa użytkownika</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

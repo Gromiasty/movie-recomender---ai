@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }}">
+                {% endif %}
+                
+                <div class="card-body">
+                    <h3 class="card-title text-center">Oceń "{{ movie.title }}"</h3>
+                    
+                    <form method="POST" class="mt-4">
+                        <div class="rating-stars text-center mb-4">
+                            {% for i in range(5, 0, -1) %}
+                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+                            <label for="star{{ i }}" class="bi bi-star-fill fs-1"></label>
+                            {% endfor %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Zapisz ocenę</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .rating-stars input[type="radio"] {
+        display: none;
+    }
+    .rating-stars label {
+        color: #ddd;
+        cursor: pointer;
+    }
+    .rating-stars input[type="radio"]:checked ~ label {
+        color: #ffc107;
+    }
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label {
+        color: #ffc107;
+    }
+</style>
+{% endblock %}

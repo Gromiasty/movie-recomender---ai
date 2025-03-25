@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Wyniki wyszukiwania dla: "{{ query }}"</h2>
+    
+    {% if not movies %}
+        <div class="alert alert-info mt-4">Nie znaleziono filmów pasujących do zapytania.</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+            {% for movie in movies %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }}" 
+                         onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
+                    {% else %}
+                    <img src="https://via.placeholder.com/500x750?text=No+Poster" class="card-img-top" alt="Brak plakatu">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">{{ movie.overview|truncate(150) }}</p>
+                        <p class="text-muted">Data wydania: {{ movie.release_date }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('rate', movie_id=movie.id) }}" class="btn btn-primary">Oceń ten film</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

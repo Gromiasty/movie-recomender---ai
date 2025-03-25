@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center my-4">Movie Mood Recommender</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="POST" class="card p-4">
+                <h3 class="text-center mb-4">Jak się dziś czujesz?</h3>
+                <select name="mood" class="form-select mb-3">
+                    <option value="happy">😊 Szczęśliwy</option>
+                    <option value="sad">😢 Smutny</option>
+                    <option value="excited">🤩 Pobudzony</option>
+                    <option value="romantic">💖 Romantyczny</option>
+                    <option value="neutral">😐 Neutralny</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Pokaż rekomendacje</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
