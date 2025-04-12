@@ -92,8 +92,18 @@ def fetch_movies_from_tmdb(mood):
             'sort_by': 'popularity.desc'
         }
         
-        if genre_id := mood_to_genre.get(mood):
+        # Dodanie parametrów
+        if genre_id := session.get('genre'):
             params['with_genres'] = genre_id
+        if year_from := session.get('year_from'):
+            params['primary_release_date.gte'] = f"{year_from}-01-01"
+        if year_to := session.get('year_to'):
+            params['primary_release_date.lte'] = f"{year_to}-12-31"
+        if min_rating := session.get('min_rating'):
+            params['vote_average.gte'] = min_rating
+        
+        if mood_genre := mood_to_genre.get(session.get('mood')):
+            params['with_genres'] = mood_genre
         
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -150,9 +160,20 @@ def get_user_ratings(user_id):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if (mood := request.form.get('mood')) in ['happy', 'sad', 'excited', 'romantic', 'neutral']:
-            session['mood'] = mood
-            return redirect(url_for('recommend'))
+        mood = request.form.get('mood')
+        genre = request.form.get('genre')
+        year_from = request.form.get('year_from')
+        year_to = request.form.get('year_to')
+        min_rating = request.form.get('min_rating')
+
+        # Przechowywanie parametrów w sesji
+        session['mood'] = mood
+        session['genre'] = genre
+        session['year_from'] = year_from
+        session['year_to'] = year_to
+        session['min_rating'] = min_rating
+
+        return redirect(url_for('recommend'))
     return render_template('index.html')
 
 @app.route('/recommend')

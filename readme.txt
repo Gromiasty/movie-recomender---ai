@@ -2,7 +2,7 @@
 
 **Aplikacja rekomendująca filmy na podstawie nastroju użytkownika z wykorzystaniem technik AI**
 
-## 📌 Opis projektu
+##  Opis projektu
 
 Movie Mood Recommender to inteligentny system rekomendacji filmów, który:
 - Analizuje aktualny nastrój użytkownika
@@ -10,7 +10,7 @@ Movie Mood Recommender to inteligentny system rekomendacji filmów, który:
 - Uczy się preferencji na podstawie ocen
 - Oferuje personalizowane propozycje
 
-## 🤖 Zaimplementowane modele AI
+##  Zaimplementowane modele AI
 
 ### 1. Hybrydowy system rekomendacji
 Połączenie dwóch podejść:
