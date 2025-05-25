@@ -14,7 +14,7 @@
                     
                     <form method="POST" class="mt-4">
                         <div class="rating-stars text-center mb-4">
-                            {% for i in range(5, 0, -1) %}
+                            {% for i in range(1, 6) %}
                             <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
                             <label for="star{{ i }}" class="bi bi-star-fill fs-1"></label>
                             {% endfor %}
@@ -29,19 +29,30 @@
 </div>
 
 <style>
-    .rating-stars input[type="radio"] {
-        display: none;
-    }
-    .rating-stars label {
-        color: #ddd;
-        cursor: pointer;
-    }
-    .rating-stars input[type="radio"]:checked ~ label {
-        color: #ffc107;
-    }
-    .rating-stars label:hover,
-    .rating-stars label:hover ~ label {
-        color: #ffc107;
-    }
+.rating-stars input[type="radio"] {
+    display: none;
+}
+.rating-stars label {
+    color: #ddd;
+    cursor: pointer;
+    font-size: 2rem;
+}
+.rating-stars input[type="radio"]:checked ~ label {
+    color: #ddd;
+}
+.rating-stars input[type="radio"]:checked + label,
+.rating-stars input[type="radio"]:checked + label ~ label {
+    color: #ffc107;
+}
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+.rating-stars label:active {
+    color: #ff9800;
+}
+.rating-stars {
+    direction: ltr;
+}
 </style>
 {% endblock %}

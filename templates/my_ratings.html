@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Twoje ocenione filmy</h2>
+    {% if movies %}
+        <div class="row">
+            {% for movie in movies %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if movie.poster_path %}
+                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p>Twoja ocena: <strong>{{ movie.user_rating }}</strong></p>
+                        <p>Nastrój: {{ movie.user_mood }}</p>
+                        <p>Ocena TMDB: {{ movie.vote_average }}/10</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Nie oceniłeś jeszcze żadnego filmu.</p>
+    {% endif %}
+</div>
+{% endblock %}

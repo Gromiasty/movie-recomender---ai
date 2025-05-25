@@ -320,6 +320,20 @@ def logout():
     session.pop('mood', None)
     return redirect(url_for('index'))
 
+@app.route('/my_ratings')
+def my_ratings():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    user_ratings = get_user_ratings(session['user_id'])
+    rated_movies = []
+    for r in user_ratings:
+        movie = get_movie_details(r['movie_id'])
+        if movie:
+            movie['user_rating'] = r['rating']
+            movie['user_mood'] = r['mood']
+            rated_movies.append(movie)
+    return render_template('my_ratings.html', movies=rated_movies)
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('error.html', message=str(error)), 404
