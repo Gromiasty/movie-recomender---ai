@@ -78,7 +78,7 @@ recommender = MovieRecommender()
 
 # Funkcje pomocnicze
 @cache.memoize(timeout=3600)
-def fetch_movies_from_tmdb(mood):
+def fetch_movies_from_tmdb(mood, genre, year_from, year_to, min_rating):
     mood_to_genre = {
         'happy': 35, 'sad': 18, 'excited': 28, 
         'romantic': 10749, 'neutral': None
@@ -91,32 +91,29 @@ def fetch_movies_from_tmdb(mood):
             'language': 'pl-PL',
             'sort_by': 'popularity.desc'
         }
-        
-        # Dodanie parametrów
-        if genre_id := session.get('genre'):
-            params['with_genres'] = genre_id
-        if year_from := session.get('year_from'):
+        genre_ids = []
+        if genre:
+            genre_ids.append(str(genre))
+        if mood_genre := mood_to_genre.get(mood):
+            if str(mood_genre) not in genre_ids:
+                genre_ids.append(str(mood_genre))
+        if genre_ids:
+            params['with_genres'] = ','.join(genre_ids)
+        if year_from:
             params['primary_release_date.gte'] = f"{year_from}-01-01"
-        if year_to := session.get('year_to'):
+        if year_to:
             params['primary_release_date.lte'] = f"{year_to}-12-31"
-        if min_rating := session.get('min_rating'):
+        if min_rating:
             params['vote_average.gte'] = min_rating
-        
-        if mood_genre := mood_to_genre.get(session.get('mood')):
-            params['with_genres'] = mood_genre
         
         response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()
-        
-        # Przygotowanie URL obrazów
         base_url = "https://image.tmdb.org/t/p/w500"
         for movie in data.get('results', []):
             movie['poster_url'] = f"{base_url}{movie['poster_path']}" if movie.get('poster_path') else None
             movie['backdrop_url'] = f"{base_url}{movie['backdrop_path']}" if movie.get('backdrop_path') else None
-        
         return data.get('results', [])[:10]
-    
     except requests.exceptions.RequestException as e:
         app.logger.error(f"Błąd TMDB: {e}")
         return []
@@ -179,12 +176,14 @@ def index():
 @app.route('/recommend')
 def recommend():
     mood = session.get('mood', 'happy')
-    movies = fetch_movies_from_tmdb(mood)
-    
+    genre = session.get('genre')
+    year_from = session.get('year_from')
+    year_to = session.get('year_to')
+    min_rating = session.get('min_rating')
+    movies = fetch_movies_from_tmdb(mood, genre, year_from, year_to, min_rating)
     if 'user_id' in session:
         user_ratings = get_user_ratings(session['user_id'])
         movies = recommender.recommend(movies, user_ratings)
-    
     return render_template('recommend.html', movies=movies, mood=mood)
 
 @app.route('/search')
@@ -305,9 +304,11 @@ def login():
         if not username:
             return render_template('login.html', error="Nazwa użytkownika jest wymagana")
         
-        user = User.query.filter_by(username=username).first() or User(username=username)
-        db.session.add(user)
-        db.session.commit()
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            user = User(username=username)
+            db.session.add(user)
+            db.session.commit()
         session['user_id'] = user.id
         return redirect(url_for('index'))
     
